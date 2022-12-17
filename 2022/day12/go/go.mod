@@ -1,3 +1,3 @@
-module rendom/AdventOfCode/day11/go
+module rendom/AdventOfCode/day12/go
 
 go 1.19

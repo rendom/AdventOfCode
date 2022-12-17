@@ -12,6 +12,9 @@ var input string
 const START = 'S'
 const END = 'E'
 
+// Ugly global state
+var END_TO_START = false
+
 type Node struct {
 	p      Point
 	parent *Node
@@ -28,7 +31,15 @@ func canVisit(a, c rune) bool {
 		c = 'z'
 	}
 
-	return c-1 <= a || a == 'S'
+	if a == END {
+		a = 'z'
+	}
+
+	if END_TO_START {
+		return a-1 <= c
+	}
+
+	return c-1 <= a || a == START
 }
 
 func findRunePosition(rows []string, find rune) (int, int, error) {
@@ -75,7 +86,24 @@ func findNeighborInMap(m []string, pos Point) []Node {
 	return result
 }
 
-func bfs(m []string, start Point, end Point) (*Node, error) {
+type FindEnd struct {
+	ByPoint  *Point
+	ByHeight *rune
+}
+
+func (e FindEnd) check(m []string, c Point) bool {
+	if e.ByPoint != nil {
+		return c == *e.ByPoint
+	}
+
+	if e.ByHeight != nil {
+		return rune(m[c.y][c.x]) == *e.ByHeight
+	}
+
+	return false
+}
+
+func bfs(m []string, start Point, end FindEnd) (*Node, error) {
 	queue := Queue{}
 	visits := map[Point]bool{}
 	queue.append(Node{p: start})
@@ -84,7 +112,7 @@ func bfs(m []string, start Point, end Point) (*Node, error) {
 	for len(queue) > 0 {
 		current := queue.shift()
 
-		if current.p == end {
+		if end.check(m, current.p) {
 			return &current, nil
 		}
 
@@ -135,7 +163,7 @@ func answer1() {
 	}
 	end := Point{x, y}
 
-	shortest, err := bfs(m, start, end)
+	shortest, err := bfs(m, start, FindEnd{ByPoint: &end})
 	if err != nil {
 		fmt.Printf("Unable to find solution\n")
 		return
@@ -144,6 +172,26 @@ func answer1() {
 	fmt.Printf("Answer 1: %d\n", getLength(m, *shortest))
 }
 
+func answer2() {
+	m := getData()
+	x, y, err := findRunePosition(m, 'E')
+	if err != nil {
+		fmt.Printf("Unable to find start (E)")
+		return
+	}
+
+	start := Point{x, y}
+	findFirst := 'a'
+	END_TO_START = true
+	shortest, err := bfs(m, start, FindEnd{ByHeight: &findFirst})
+	if err != nil {
+		fmt.Println("Unable to find solution")
+		return
+	}
+	fmt.Printf("Answer 2: %d\n", getLength(m, *shortest))
+}
+
 func main() {
 	answer1()
+	answer2()
 }
