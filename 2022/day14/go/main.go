@@ -56,6 +56,9 @@ func pourSand(m M, start C) M {
 
 		if !moved {
 			m[currPos] = SAND
+			if currPos == start {
+				rest = true
+			}
 			currPos = start
 		}
 
@@ -68,23 +71,31 @@ func pourSand(m M, start C) M {
 }
 
 func answer1() int {
-	return 0
-}
-
-func answer2() int {
-	return 0
-}
-
-func main() {
 	m, err := parseData(input)
 	if err != nil {
 		fmt.Printf("Parsing error: %v", err)
-		return
+		return 0
 	}
 
 	pourSand(m, C{500, 0})
-	render(m)
+	return unitsOfSand(m)
+}
 
-	fmt.Printf("Answer 1: %d\n", unitsOfSand(m))
+func answer2() int {
+	m, err := parseData(input)
+	if err != nil {
+		fmt.Printf("Parsing error: %v", err)
+		return 0
+	}
+
+	end := getEnd(m)
+	m = fillRange(m, C{0, end.y + 2}, C{99999, end.y + 2}, ROCK)
+	pourSand(m, C{500, 0})
+	return unitsOfSand(m)
+}
+
+func main() {
+
+	fmt.Printf("Answer 1: %d\n", answer1())
 	fmt.Printf("Answer 2: %d\n", answer2())
 }
