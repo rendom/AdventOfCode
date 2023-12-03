@@ -29,12 +29,45 @@ const (
 )
 
 // only 12 red cubes, 13 green cubes, and 14 blue cubes
-// max ^
 
 func main() {
-	answer1 := answerPart1(input)
-	// 2456 to low
-	fmt.Printf("Answer part 1: %d\n", answer1)
+	fmt.Printf("Answer part 1: %d\n", answerPart1(input))
+	fmt.Printf("Answer part 2: %d\n", answerPart2(input))
+}
+
+func answerPart2(input string) int {
+	games, err := parseInput(input)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return 0
+	}
+
+	answer := 0
+	for _, g := range games {
+		b := getMinCubesForGame(g)
+		answer += b.Red * b.Green * b.Blue
+	}
+
+	return answer
+}
+
+func Max(x int, y int) int {
+	if x > y {
+		return x
+	}
+
+	return y
+}
+
+func getMinCubesForGame(game Game) Bags {
+	result := Bags{}
+	for _, s := range game.Sets {
+		result.Red = max(result.Red, s.Red)
+		result.Green = max(result.Green, s.Green)
+		result.Blue = max(result.Blue, s.Blue)
+	}
+
+	return result
 }
 
 func answerPart1(input string) int {

@@ -16,3 +16,10 @@ func TestAnswerPart1(t *testing.T) {
 		t.Fatalf("Wrong answer, got %d expected %d", r, answer)
 	}
 }
+
+func TestAnswerPart2(t *testing.T) {
+	answer := 2286
+	if r := answerPart2(example); r != answer {
+		t.Fatalf("Wrong answer, got %d expected %d", r, answer)
+	}
+}
