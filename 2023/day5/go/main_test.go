@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+// [[9999 4] [19999 4] [1005 4]]
+// const example string = `seeds: 79 14 55 13 1000 10
 const example string = `seeds: 79 14 55 13
 
 seed-to-soil map:
@@ -38,6 +40,14 @@ humidity-to-location map:
 60 56 37
 56 93 4`
 
+// DESTSTART | SOURCESTART | LENGTH
+
+// Humi 46 10
+// Check 56 93
+// NO match 56 93
+// matched: 56 - 56 | og: 56 - 93
+// loc 60 0
+
 func TestAnswerPart1(t *testing.T) {
 	answer := 35
 	if r := answerPart1(example); r != answer {
@@ -45,9 +55,9 @@ func TestAnswerPart1(t *testing.T) {
 	}
 }
 
+// 81+94
 func TestAnswerPart2(t *testing.T) {
-	return
-	answer := 30
+	answer := 46
 	if r := answerPart2(example); r != answer {
 		t.Fatalf("Wrong answer, got %d expected %d", r, answer)
 	}
